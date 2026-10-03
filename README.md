@@ -2,6 +2,10 @@
 
 **Know what a repository asks your AI coding agent to do before the agent does it.**
 
+[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-DirectiveGuard-2ea44f?logo=github)](https://github.com/marketplace/actions/directiveguard-ai-repository-scan)
+[![CI](https://github.com/matthew6s/directiveguard/actions/workflows/ci.yml/badge.svg)](https://github.com/matthew6s/directiveguard/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 DirectiveGuard is a fast, local scanner for risky AI-agent instructions, MCP configurations, and agent-facing GitHub workflows. It runs without an account, API key, network access, or language model.
 
 ```console
@@ -53,6 +57,8 @@ directiveguard --format sarif --fail-on none . > directiveguard.sarif
 Exit codes are `0` for a passing scan, `1` when findings meet the configured threshold, and `2` for usage or scanning errors.
 
 ## GitHub Action
+
+Install it from the [GitHub Marketplace](https://github.com/marketplace/actions/directiveguard-ai-repository-scan), or add it directly to a workflow:
 
 ```yaml
 name: DirectiveGuard
