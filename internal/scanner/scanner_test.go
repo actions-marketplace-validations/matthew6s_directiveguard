@@ -55,6 +55,24 @@ jobs:
 	assertRule(t, result, "ASW003")
 }
 
+func TestMutableActionRuleAllowsVersionedMajorTag(t *testing.T) {
+	root := t.TempDir()
+	writeTestFile(t, root, ".github/workflows/actions.yml", "steps:\n  - uses: owner/versioned@v1\n  - uses: owner/unversioned@main\n")
+	result, err := Scan(root)
+	if err != nil {
+		t.Fatalf("Scan: %v", err)
+	}
+	count := 0
+	for _, finding := range result.Findings {
+		if finding.RuleID == "ASW004" {
+			count++
+		}
+	}
+	if count != 1 {
+		t.Fatalf("ASW004 count = %d, want 1; findings=%+v", count, result.Findings)
+	}
+}
+
 func TestScanIgnoresOrdinaryContentAndSkippedDirectories(t *testing.T) {
 	root := t.TempDir()
 	writeTestFile(t, root, "AGENTS.md", "Run go test ./... before submitting. Do not read files outside this repository or expose credentials.\n")

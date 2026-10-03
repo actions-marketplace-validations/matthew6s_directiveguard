@@ -11,7 +11,7 @@ DirectiveGuard starts with a small set of reviewable, high-signal rules. Finding
 | ASW001 | High | Untrusted GitHub event content interpolated directly into a `run` command |
 | ASW002 | High | `permissions: write-all` |
 | ASW003 | High | A `pull_request_target` workflow checking out an untrusted pull-request ref |
-| ASW004 | Medium | GitHub Actions referenced by mutable branches or floating tags |
+| ASW004 | Medium | GitHub Actions referenced by branches or the `latest` tag |
 | ASM001 | High | MCP endpoints using plaintext HTTP |
 | ASM002 | Medium | MCP packages installed automatically without an exact version |
 | ASM003 | High | Likely literal credentials in MCP configuration |

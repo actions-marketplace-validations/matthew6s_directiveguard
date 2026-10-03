@@ -62,10 +62,10 @@ var workflowRules = []rule{
 		requires:    regexp.MustCompile(`(?m)^\s*(?:on\s*:\s*\[[^]]*)?pull_request_target\b`),
 	},
 	{
-		id: "ASW004", severity: SeverityMedium, title: "Action uses a mutable version",
-		description: "An action referenced by a branch or floating tag can change without review.",
+		id: "ASW004", severity: SeverityMedium, title: "Action uses an unversioned mutable reference",
+		description: "An action referenced by a branch or latest tag can change without review.",
 		remediation: "Pin actions to a full commit SHA and use a comment to record the release version.",
-		pattern:     regexp.MustCompile(`(?i)^\s*-?\s*uses:\s*[a-z0-9_.-]+/[a-z0-9_.-]+@(main|master|latest|v\d+)\s*(?:#.*)?$`),
+		pattern:     regexp.MustCompile(`(?i)^\s*-?\s*uses:\s*[a-z0-9_.-]+/[a-z0-9_.-]+@(main|master|latest)\s*(?:#.*)?$`),
 	},
 }
 
