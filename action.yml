@@ -1,0 +1,25 @@
+name: AgentShield
+description: Scan repositories for unsafe AI-agent instructions, MCP configuration, and workflows
+author: Matthew Searce
+branding:
+  icon: shield
+  color: blue
+inputs:
+  path:
+    description: Repository path to scan
+    default: /github/workspace
+  format:
+    description: Output format (text, json, or sarif)
+    default: text
+  fail-on:
+    description: Minimum severity that fails the check
+    default: high
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - --format
+    - ${{ inputs.format }}
+    - --fail-on
+    - ${{ inputs.fail-on }}
+    - ${{ inputs.path }}

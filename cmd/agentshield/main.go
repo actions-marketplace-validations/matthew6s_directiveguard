@@ -1,0 +1,63 @@
+package main
+
+import (
+	"flag"
+	"fmt"
+	"io"
+	"os"
+
+	"github.com/matthew6s/agentshield/internal/report"
+	"github.com/matthew6s/agentshield/internal/scanner"
+)
+
+var version = "dev"
+
+func main() {
+	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
+}
+
+func run(args []string, stdout, stderr io.Writer) int {
+	flags := flag.NewFlagSet("agentshield", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	format := flags.String("format", "text", "output format: text, json, or sarif")
+	failOn := flags.String("fail-on", "high", "exit 1 at this severity: low, medium, high, or none")
+	showVersion := flags.Bool("version", false, "print version")
+	flags.Usage = func() {
+		fmt.Fprintln(stderr, "Usage: agentshield [options] [path]")
+		fmt.Fprintln(stderr, "Scan a repository for unsafe AI-agent configuration.")
+		flags.PrintDefaults()
+	}
+	if err := flags.Parse(args); err != nil {
+		return 2
+	}
+	if *showVersion {
+		fmt.Fprintf(stdout, "agentshield %s\n", version)
+		return 0
+	}
+	if flags.NArg() > 1 {
+		fmt.Fprintln(stderr, "agentshield: expected at most one path")
+		return 2
+	}
+	root := "."
+	if flags.NArg() == 1 {
+		root = flags.Arg(0)
+	}
+	threshold, err := scanner.ParseThreshold(*failOn)
+	if err != nil {
+		fmt.Fprintf(stderr, "agentshield: %v\n", err)
+		return 2
+	}
+	result, err := scanner.Scan(root)
+	if err != nil {
+		fmt.Fprintf(stderr, "agentshield: %v\n", err)
+		return 2
+	}
+	if err := report.Write(stdout, *format, result); err != nil {
+		fmt.Fprintf(stderr, "agentshield: %v\n", err)
+		return 2
+	}
+	if result.Fails(threshold) {
+		return 1
+	}
+	return 0
+}
