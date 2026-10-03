@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime/debug"
 
 	"github.com/matthew6s/agentshield/internal/report"
 	"github.com/matthew6s/agentshield/internal/scanner"
@@ -31,7 +32,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return 2
 	}
 	if *showVersion {
-		fmt.Fprintf(stdout, "agentshield %s\n", version)
+		fmt.Fprintf(stdout, "agentshield %s\n", buildVersion())
 		return 0
 	}
 	if flags.NArg() > 1 {
@@ -60,4 +61,14 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return 1
 	}
 	return 0
+}
+
+func buildVersion() string {
+	if version != "dev" {
+		return version
+	}
+	if info, ok := debug.ReadBuildInfo(); ok && info.Main.Version != "" && info.Main.Version != "(devel)" {
+		return info.Main.Version
+	}
+	return version
 }

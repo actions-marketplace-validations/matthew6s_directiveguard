@@ -43,3 +43,12 @@ func TestRunVersion(t *testing.T) {
 		t.Fatalf("unexpected output: %q", stdout.String())
 	}
 }
+
+func TestBuildVersionOverride(t *testing.T) {
+	previous := version
+	version = "v1.2.3"
+	t.Cleanup(func() { version = previous })
+	if got := buildVersion(); got != "v1.2.3" {
+		t.Fatalf("buildVersion() = %q, want v1.2.3", got)
+	}
+}
