@@ -143,10 +143,14 @@ func TestStripeSignature(t *testing.T) {
 }
 
 func TestStripeCheckoutAndWebhook(t *testing.T) {
-	var checkoutForm string
+	var checkoutForm, portalForm string
 	stripe := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		data, _ := io.ReadAll(r.Body)
-		checkoutForm = string(data)
+		if strings.Contains(r.URL.Path, "billing_portal") {
+			portalForm = string(data)
+		} else {
+			checkoutForm = string(data)
+		}
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"url":"https://checkout.stripe.test/session"}`))
 	}))
@@ -156,6 +160,7 @@ func TestStripeCheckoutAndWebhook(t *testing.T) {
 	server.config.StripeSecretKey = "sk_test"
 	server.config.StripeWebhookSecret = "whsec_test"
 	server.config.StripeTeamPriceID = "price_team"
+	server.config.StripePortalConfigID = "bpc_team"
 	user, err := store.UpsertUser(context.Background(), 301, "buyer", "buyer@example.com", "")
 	if err != nil {
 		t.Fatal(err)
@@ -185,6 +190,10 @@ func TestStripeCheckoutAndWebhook(t *testing.T) {
 	}
 	if updated.Plan != "team" || updated.StripeCustomerID != "cus_test" {
 		t.Fatalf("billing not updated: %+v", updated)
+	}
+	response = authenticatedRequest(t, server, user.ID, http.MethodPost, "/api/billing/portal", `{}`)
+	if response.Code != http.StatusOK || !strings.Contains(portalForm, "configuration=bpc_team") {
+		t.Fatalf("portal=%d form=%s", response.Code, portalForm)
 	}
 }
 

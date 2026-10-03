@@ -51,6 +51,9 @@ func (s *Server) createPortal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	form := url.Values{"customer": {user.StripeCustomerID}, "return_url": {s.config.BaseURL + "/app"}}
+	if s.config.StripePortalConfigID != "" {
+		form.Set("configuration", s.config.StripePortalConfigID)
+	}
 	var response struct {
 		URL string `json:"url"`
 	}

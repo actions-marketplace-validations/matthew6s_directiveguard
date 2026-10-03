@@ -8,29 +8,31 @@ import (
 )
 
 type Config struct {
-	Address             string
-	DatabasePath        string
-	BaseURL             string
-	GitHubClientID      string
-	GitHubClientSecret  string
-	SessionSecret       []byte
-	StripeSecretKey     string
-	StripeAPIBase       string
-	StripeWebhookSecret string
-	StripeTeamPriceID   string
+	Address              string
+	DatabasePath         string
+	BaseURL              string
+	GitHubClientID       string
+	GitHubClientSecret   string
+	SessionSecret        []byte
+	StripeSecretKey      string
+	StripeAPIBase        string
+	StripeWebhookSecret  string
+	StripeTeamPriceID    string
+	StripePortalConfigID string
 }
 
 func ConfigFromEnv() (Config, error) {
 	config := Config{
-		Address:             envOr("DIRECTIVEGUARD_ADDRESS", ":8080"),
-		DatabasePath:        envOr("DIRECTIVEGUARD_DATABASE", "directiveguard-cloud.db"),
-		BaseURL:             strings.TrimRight(envOr("DIRECTIVEGUARD_BASE_URL", "http://localhost:8080"), "/"),
-		GitHubClientID:      os.Getenv("GITHUB_CLIENT_ID"),
-		GitHubClientSecret:  os.Getenv("GITHUB_CLIENT_SECRET"),
-		StripeSecretKey:     os.Getenv("STRIPE_SECRET_KEY"),
-		StripeAPIBase:       envOr("STRIPE_API_BASE", "https://api.stripe.com"),
-		StripeWebhookSecret: os.Getenv("STRIPE_WEBHOOK_SECRET"),
-		StripeTeamPriceID:   os.Getenv("STRIPE_TEAM_PRICE_ID"),
+		Address:              envOr("DIRECTIVEGUARD_ADDRESS", ":8080"),
+		DatabasePath:         envOr("DIRECTIVEGUARD_DATABASE", "directiveguard-cloud.db"),
+		BaseURL:              strings.TrimRight(envOr("DIRECTIVEGUARD_BASE_URL", "http://localhost:8080"), "/"),
+		GitHubClientID:       os.Getenv("GITHUB_CLIENT_ID"),
+		GitHubClientSecret:   os.Getenv("GITHUB_CLIENT_SECRET"),
+		StripeSecretKey:      os.Getenv("STRIPE_SECRET_KEY"),
+		StripeAPIBase:        envOr("STRIPE_API_BASE", "https://api.stripe.com"),
+		StripeWebhookSecret:  os.Getenv("STRIPE_WEBHOOK_SECRET"),
+		StripeTeamPriceID:    os.Getenv("STRIPE_TEAM_PRICE_ID"),
+		StripePortalConfigID: os.Getenv("STRIPE_PORTAL_CONFIG_ID"),
 	}
 	encodedSecret := os.Getenv("DIRECTIVEGUARD_SESSION_SECRET")
 	if encodedSecret == "" {
