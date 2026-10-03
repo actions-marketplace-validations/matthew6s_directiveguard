@@ -21,3 +21,12 @@ jobs:
       - run: go vet ./...
       - run: go build ./...
       - run: go run ./cmd/directiveguard --fail-on low .
+      - name: Upload scan to DirectiveGuard Cloud
+        if: github.event_name == 'push'
+        env:
+          DIRECTIVEGUARD_API_KEY: ${{ secrets.DIRECTIVEGUARD_API_KEY }}
+        run: >-
+          go run ./cmd/directiveguard
+          --fail-on none
+          --upload https://directiveguard.searce.space
+          .
