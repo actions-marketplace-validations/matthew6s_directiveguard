@@ -25,6 +25,7 @@ var instructionRules = []rule{
 		description: "Agent instructions direct the agent to read likely credential material outside the repository.",
 		remediation: "Remove the instruction and provide narrowly scoped credentials through an approved secret store.",
 		pattern:     regexp.MustCompile(`(?i)(read|open|print|cat|copy|upload|send|exfiltrat)[^\n]{0,100}(~/?\.ssh|~/?\.aws|~/?\.gnupg|credentials|id_rsa|github[_ -]?token)`),
+		exclude:     regexp.MustCompile(`(?i)\b(do not|don't|never|must not|should not)\b[^\n]{0,120}(read|open|print|cat|copy|upload|send|exfiltrat)`),
 	},
 	{
 		id: "ASI003", severity: SeverityMedium, title: "Instruction attempts to override governing rules",
