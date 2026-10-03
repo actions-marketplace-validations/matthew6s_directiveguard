@@ -111,6 +111,14 @@
       .counts span {
         margin-left: 10px;
       }
+      .billing-note {
+        color: var(--muted);
+        font-size: 13px;
+        margin-top: 8px;
+        max-width: 290px;
+        text-align: right;
+      }
+      a { color: var(--brand); }
       .high {
         color: var(--danger);
       }
@@ -156,6 +164,11 @@
         </div>
         <div>
           <button id="billing" onclick="billing()">Upgrade to Team</button>
+          <div class="billing-note">
+            $29/month, renewing monthly until canceled. By upgrading you agree
+            to the <a href="/terms">Terms</a> and
+            <a href="/refunds">refund policy</a>.
+          </div>
         </div>
       </div>
       <div class="grid">
@@ -175,6 +188,11 @@
           <div id="scans" class="muted">No scans uploaded yet.</div>
         </section>
       </div>
+      <p class="muted" style="margin-top: 30px">
+        <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> ·
+        <a href="/refunds">Refunds and cancellation</a> ·
+        <a href="mailto:info@searcedesigns.com">Support</a>
+      </p>
     </main>
     <dialog id="secret-dialog">
       <h2>API key created</h2>

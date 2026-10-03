@@ -39,7 +39,7 @@ docker run --read-only --tmpfs /tmp -v directiveguard-data:/data --env-file .env
 ## Upload from CI
 
 ```sh
-DIRECTIVEGUARD_API_KEY=dg_live_... directiveguard --upload https://cloud.example.com .
+DIRECTIVEGUARD_API_KEY=dg_live_... directiveguard --upload https://directiveguard.searce.space .
 ```
 
 For the GitHub Action, provide `cloud-url` and store `api-key` in GitHub Actions secrets.

@@ -83,7 +83,7 @@ To retain scan history in DirectiveGuard Cloud:
       - uses: matthew6s/directiveguard@v1
         with:
           fail-on: high
-          cloud-url: https://cloud.example.com
+          cloud-url: https://directiveguard.searce.space
           api-key: ${{ secrets.DIRECTIVEGUARD_API_KEY }}
 ```
 

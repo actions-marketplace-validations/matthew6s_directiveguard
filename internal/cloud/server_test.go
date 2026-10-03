@@ -164,7 +164,7 @@ func TestStripeCheckoutAndWebhook(t *testing.T) {
 	if response.Code != http.StatusOK {
 		t.Fatalf("checkout=%d: %s", response.Code, response.Body.String())
 	}
-	if !strings.Contains(checkoutForm, "price_team") || !strings.Contains(checkoutForm, "client_reference_id") {
+	if !strings.Contains(checkoutForm, "price_team") || !strings.Contains(checkoutForm, "client_reference_id") || !strings.Contains(checkoutForm, "consent_collection%5Bterms_of_service%5D=required") {
 		t.Fatalf("unexpected checkout form: %s", checkoutForm)
 	}
 	body := []byte(fmt.Sprintf(`{"type":"checkout.session.completed","data":{"object":{"customer":"cus_test","client_reference_id":"%d"}}}`, user.ID))
@@ -198,6 +198,21 @@ func TestHealthAndSecurityHeaders(t *testing.T) {
 	}
 	if response.Header().Get("Content-Security-Policy") == "" {
 		t.Fatal("missing CSP")
+	}
+}
+
+func TestPolicyPages(t *testing.T) {
+	server, _ := testServer(t)
+	for _, path := range []string{"/privacy", "/terms", "/refunds"} {
+		request := httptest.NewRequest(http.MethodGet, path, nil)
+		response := httptest.NewRecorder()
+		server.Handler().ServeHTTP(response, request)
+		if response.Code != http.StatusOK {
+			t.Errorf("GET %s status=%d", path, response.Code)
+		}
+		if !strings.Contains(response.Body.String(), "Effective October 3, 2026") {
+			t.Errorf("GET %s missing effective date", path)
+		}
 	}
 }
 

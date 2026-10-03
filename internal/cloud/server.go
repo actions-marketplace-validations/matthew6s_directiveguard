@@ -35,6 +35,9 @@ func NewServer(config Config, store *Store, logger *slog.Logger) *Server {
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /", s.home)
+	mux.HandleFunc("GET /privacy", s.staticPage("web/privacy.html"))
+	mux.HandleFunc("GET /terms", s.staticPage("web/terms.html"))
+	mux.HandleFunc("GET /refunds", s.staticPage("web/refunds.html"))
 	mux.HandleFunc("GET /app", s.app)
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, _ *http.Request) {
 		writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
@@ -54,6 +57,18 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/billing/portal", withUser(s.createPortal, s))
 	mux.HandleFunc("POST /webhooks/stripe", s.stripeWebhook)
 	return s.securityHeaders(s.recoverPanics(s.logRequests(mux)))
+}
+
+func (s *Server) staticPage(name string) http.HandlerFunc {
+	return func(w http.ResponseWriter, _ *http.Request) {
+		data, err := webFiles.ReadFile(name)
+		if err != nil {
+			s.internalError(w, err)
+			return
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		_, _ = w.Write(data)
+	}
 }
 
 func (s *Server) home(w http.ResponseWriter, r *http.Request) {

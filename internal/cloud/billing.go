@@ -24,7 +24,7 @@ func (s *Server) createCheckout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user := userFromContext(r.Context())
-	form := url.Values{"mode": {"subscription"}, "line_items[0][price]": {s.config.StripeTeamPriceID}, "line_items[0][quantity]": {"1"}, "success_url": {s.config.BaseURL + "/app?billing=success"}, "cancel_url": {s.config.BaseURL + "/app?billing=cancelled"}, "client_reference_id": {strconv.FormatInt(user.ID, 10)}, "metadata[user_id]": {strconv.FormatInt(user.ID, 10)}}
+	form := url.Values{"mode": {"subscription"}, "line_items[0][price]": {s.config.StripeTeamPriceID}, "line_items[0][quantity]": {"1"}, "success_url": {s.config.BaseURL + "/app?billing=success"}, "cancel_url": {s.config.BaseURL + "/app?billing=cancelled"}, "client_reference_id": {strconv.FormatInt(user.ID, 10)}, "metadata[user_id]": {strconv.FormatInt(user.ID, 10)}, "consent_collection[terms_of_service]": {"required"}}
 	if user.StripeCustomerID != "" {
 		form.Set("customer", user.StripeCustomerID)
 	} else if user.Email != "" {
