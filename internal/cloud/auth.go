@@ -34,7 +34,7 @@ func (s *Server) loginGitHub(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.setSignedCookie(w, "oauth_state", state, 10*time.Minute)
-	params := url.Values{"client_id": {s.config.GitHubClientID}, "redirect_uri": {s.config.BaseURL + "/auth/github/callback"}, "scope": {"read:user user:email"}, "state": {state}}
+	params := url.Values{"client_id": {s.config.GitHubClientID}, "redirect_uri": {s.config.BaseURL + "/auth/github/callback"}, "scope": {"read:user"}, "state": {state}}
 	http.Redirect(w, r, "https://github.com/login/oauth/authorize?"+params.Encode(), http.StatusFound)
 }
 
