@@ -71,11 +71,21 @@ jobs:
           fail-on: high
 ```
 
+To retain scan history in AgentShield Cloud:
+
+```yaml
+      - uses: matthew6s/agentshield@v1
+        with:
+          fail-on: high
+          cloud-url: https://cloud.example.com
+          api-key: ${{ secrets.AGENTSHIELD_API_KEY }}
+```
+
 Pin actions to full commit hashes in sensitive production workflows. Version tags are shown above for readability.
 
 ## Open source and Cloud
 
-The CLI, core rules, and CI integration are MIT licensed. The planned paid [AgentShield Cloud](docs/cloud.md) adds organization-wide policy, continuous monitoring, history, ownership, audit exports, and enterprise access controls. The free scanner remains fully useful on its own.
+The CLI, core rules, and CI integration are MIT licensed. The deployable [AgentShield Cloud](docs/cloud.md) MVP adds GitHub login, projects, scan history, plan limits, API keys, and Stripe subscriptions. The free scanner remains fully useful on its own.
 
 ## Development
 

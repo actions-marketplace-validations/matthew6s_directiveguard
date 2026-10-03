@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"io"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/matthew6s/agentshield/internal/report"
 	"github.com/matthew6s/agentshield/internal/scanner"
+	"github.com/matthew6s/agentshield/internal/upload"
 )
 
 var version = "dev"
@@ -23,6 +25,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 	format := flags.String("format", "text", "output format: text, json, or sarif")
 	failOn := flags.String("fail-on", "high", "exit 1 at this severity: low, medium, high, or none")
 	showVersion := flags.Bool("version", false, "print version")
+	uploadURL := flags.String("upload", "", "upload results to an AgentShield Cloud URL")
 	flags.Usage = func() {
 		fmt.Fprintln(stderr, "Usage: agentshield [options] [path]")
 		fmt.Fprintln(stderr, "Scan a repository for unsafe AI-agent configuration.")
@@ -56,6 +59,16 @@ func run(args []string, stdout, stderr io.Writer) int {
 	if err := report.Write(stdout, *format, result); err != nil {
 		fmt.Fprintf(stderr, "agentshield: %v\n", err)
 		return 2
+	}
+	if *uploadURL != "" {
+		apiKey := os.Getenv("AGENTSHIELD_API_KEY")
+		if apiKey == "" {
+			apiKey = os.Getenv("INPUT_API_KEY")
+		}
+		if err := upload.Send(context.Background(), *uploadURL, apiKey, result, upload.Metadata{CommitSHA: os.Getenv("GITHUB_SHA"), Branch: os.Getenv("GITHUB_REF_NAME")}); err != nil {
+			fmt.Fprintf(stderr, "agentshield: %v\n", err)
+			return 2
+		}
 	}
 	if result.Fails(threshold) {
 		return 1

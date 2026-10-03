@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>AgentShield Cloud</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #08111f;
+        --card: #101d30;
+        --line: #243750;
+        --text: #eaf2ff;
+        --muted: #9bb0cb;
+        --brand: #5ee1ad;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(circle at 80% 0, #17385a 0, transparent 38%),
+          var(--bg);
+        color: var(--text);
+        font:
+          16px/1.55 system-ui,
+          sans-serif;
+      }
+      main {
+        max-width: 1080px;
+        margin: auto;
+        padding: 28px;
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .logo {
+        font-weight: 800;
+        font-size: 20px;
+      }
+      .shield {
+        color: var(--brand);
+      }
+      a.button,
+      button {
+        display: inline-block;
+        background: var(--brand);
+        color: #042019;
+        padding: 11px 18px;
+        border: 0;
+        border-radius: 9px;
+        text-decoration: none;
+        font-weight: 750;
+      }
+      .hero {
+        padding: 110px 0 80px;
+        max-width: 800px;
+      }
+      h1 {
+        font-size: clamp(44px, 8vw, 78px);
+        line-height: 1.02;
+        margin: 0 0 24px;
+        letter-spacing: -0.05em;
+      }
+      .hero p {
+        font-size: 21px;
+        color: var(--muted);
+        max-width: 660px;
+      }
+      .eyebrow {
+        color: var(--brand);
+        font-weight: 700;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+      .card {
+        background: color-mix(in srgb, var(--card) 88%, transparent);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 24px;
+      }
+      .card h2 {
+        margin-top: 0;
+      }
+      .card p {
+        color: var(--muted);
+      }
+      .price {
+        font-size: 34px;
+        font-weight: 800;
+      }
+      .price small {
+        font-size: 14px;
+        color: var(--muted);
+      }
+      footer {
+        padding: 70px 0;
+        color: var(--muted);
+      }
+      @media (max-width: 700px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .hero {
+          padding: 70px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav class="nav">
+        <div class="logo"><span class="shield">◆</span> AgentShield</div>
+        <a class="button" href="/login/github">Sign in with GitHub</a>
+      </nav>
+      <section class="hero">
+        <div class="eyebrow">SECURITY FOR AI-NATIVE DEVELOPMENT</div>
+        <h1>Trust your agents.<br />Verify their instructions.</h1>
+        <p>
+          Continuously monitor agent instructions, MCP configuration, and
+          privileged workflows across your repositories. Keep the scanner open
+          source; pay for team coordination, history, and policy.
+        </p>
+        <a class="button" href="/login/github">Start free</a>
+      </section>
+      <section class="grid">
+        <article class="card">
+          <h2>Continuous visibility</h2>
+          <p>
+            Upload every CI scan and see risk trends across projects, commits,
+            and branches.
+          </p>
+        </article>
+        <article class="card">
+          <h2>Safe by design</h2>
+          <p>
+            API keys are hashed, suspected credentials are redacted, and
+            repository source never needs to leave CI.
+          </p>
+        </article>
+        <article class="card">
+          <h2>Built for action</h2>
+          <p>
+            High-signal findings include evidence, severity, and a concrete
+            remediation.
+          </p>
+        </article>
+      </section>
+      <section class="grid" style="margin-top: 70px">
+        <article class="card">
+          <h2>Free</h2>
+          <div class="price">$0</div>
+          <p>
+            1 project<br />100 scans per month<br />30-day dashboard history
+          </p>
+        </article>
+        <article class="card" style="border-color: var(--brand)">
+          <h2>Team</h2>
+          <div class="price">$29 <small>/ month</small></div>
+          <p>
+            25 projects<br />5,000 scans per month<br />Central policy and
+            history
+          </p>
+        </article>
+        <article class="card">
+          <h2>Enterprise</h2>
+          <div class="price">Coming soon</div>
+          <p>
+            SSO, RBAC, audit exports, private deployment, and priority support.
+          </p>
+        </article>
+      </section>
+      <footer>
+        AgentShield Cloud · The core scanner remains MIT licensed.
+      </footer>
+    </main>
+  </body>
+</html>

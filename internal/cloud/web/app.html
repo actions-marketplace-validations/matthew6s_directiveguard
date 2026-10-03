@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Dashboard · AgentShield</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #08111f;
+        --panel: #101d30;
+        --line: #263a54;
+        --text: #eaf2ff;
+        --muted: #9bb0cb;
+        --brand: #5ee1ad;
+        --danger: #ff6b7a;
+        --warn: #ffc761;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font:
+          15px/1.5 system-ui,
+          sans-serif;
+      }
+      header {
+        border-bottom: 1px solid var(--line);
+        padding: 16px 26px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        font-size: 19px;
+        font-weight: 800;
+      }
+      .brand {
+        color: var(--brand);
+      }
+      main {
+        max-width: 1100px;
+        margin: auto;
+        padding: 36px 24px;
+      }
+      h1 {
+        font-size: 34px;
+        margin: 0;
+      }
+      .sub {
+        color: var(--muted);
+        margin-top: 5px;
+      }
+      .bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 30px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+      .panel {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        border-radius: 13px;
+        padding: 21px;
+      }
+      .panel h2 {
+        margin: 0 0 16px;
+      }
+      .item {
+        border-top: 1px solid var(--line);
+        padding: 13px 0;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      button,
+      input {
+        font: inherit;
+        border-radius: 8px;
+        padding: 9px 12px;
+      }
+      button {
+        border: 0;
+        background: var(--brand);
+        color: #042019;
+        font-weight: 750;
+        cursor: pointer;
+      }
+      button.secondary {
+        background: #243750;
+        color: var(--text);
+      }
+      input {
+        border: 1px solid var(--line);
+        background: #091524;
+        color: var(--text);
+        margin-right: 7px;
+      }
+      .counts span {
+        margin-left: 10px;
+      }
+      .high {
+        color: var(--danger);
+      }
+      .medium {
+        color: var(--warn);
+      }
+      dialog {
+        background: var(--panel);
+        color: var(--text);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        max-width: 560px;
+      }
+      code {
+        display: block;
+        overflow: auto;
+        background: #06101d;
+        padding: 12px;
+        border-radius: 8px;
+        color: var(--brand);
+      }
+      @media (max-width: 750px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .bar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo"><span class="brand">◆</span> AgentShield Cloud</div>
+      <button class="secondary" onclick="logout()">Sign out</button>
+    </header>
+    <main>
+      <div class="bar">
+        <div>
+          <h1>Security overview</h1>
+          <div class="sub" id="identity">Loading…</div>
+        </div>
+        <div>
+          <button id="billing" onclick="billing()">Upgrade to Team</button>
+        </div>
+      </div>
+      <div class="grid">
+        <section class="panel">
+          <h2>Projects</h2>
+          <form id="project-form">
+            <input id="name" placeholder="Project name" required /><input
+              id="slug"
+              placeholder="project-slug"
+              required
+            /><button>Create</button>
+          </form>
+          <div id="projects"></div>
+        </section>
+        <section class="panel">
+          <h2>Recent scans</h2>
+          <div id="scans" class="muted">No scans uploaded yet.</div>
+        </section>
+      </div>
+    </main>
+    <dialog id="secret-dialog">
+      <h2>API key created</h2>
+      <p>
+        Copy this now. AgentShield stores only its hash and cannot show it
+        again.
+      </p>
+      <code id="secret"></code>
+      <p>
+        <button onclick="document.querySelector('dialog').close()">Done</button>
+      </p>
+    </dialog>
+    <script>
+      let me;
+      const identityEl = document.querySelector("#identity"),
+        billingEl = document.querySelector("#billing"),
+        projectForm = document.querySelector("#project-form"),
+        nameInput = document.querySelector("#name"),
+        slugInput = document.querySelector("#slug"),
+        secretEl = document.querySelector("#secret");
+      const api = async (path, options = {}) => {
+        const r = await fetch(path, {
+          ...options,
+          headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {}),
+          },
+        });
+        const data = r.status === 204 ? null : await r.json();
+        if (!r.ok) throw new Error(data?.error || "Request failed");
+        return data;
+      };
+      async function load() {
+        me = await api("/api/me");
+        identityEl.textContent = `@${me.user.login} · ${me.user.plan} plan`;
+        billingEl.textContent =
+          me.user.plan === "team" ? "Manage billing" : "Upgrade to Team";
+        billingEl.disabled = !me.billing_enabled;
+        const projects = await api("/api/projects");
+        const projectRows = await Promise.all(
+          projects.map(async (p) => {
+            const keys = await api(`/api/projects/${p.id}/keys`);
+            const keyRows = keys
+              .map(
+                (key) =>
+                  `<div class="muted">${escapeHTML(key.name)} · ${escapeHTML(key.prefix)}… <button class="secondary" onclick="revokeKey(${p.id}, ${key.id})">Revoke</button></div>`,
+              )
+              .join("");
+            return `<div class="item"><div><b>${escapeHTML(p.name)}</b><div class="muted">${escapeHTML(p.slug)}</div>${keyRows}</div><button class="secondary" onclick="createKey(${p.id})">Create API key</button></div>`;
+          }),
+        );
+        document.querySelector("#projects").innerHTML = projects.length
+          ? projectRows.join("")
+          : '<p class="muted">Create your first project to receive scans.</p>';
+        const scans = await api("/api/scans");
+        document.querySelector("#scans").innerHTML = scans.length
+          ? scans
+              .map(
+                (s) =>
+                  `<div class="item"><div><b>Project ${s.project_id}</b><div class="muted">${new Date(s.created_at).toLocaleString()} · ${s.files_scanned} files</div></div><div class="counts"><span class="high">${s.high} high</span><span class="medium">${s.medium} medium</span></div></div>`,
+              )
+              .join("")
+          : "No scans uploaded yet.";
+      }
+      projectForm.onsubmit = async (e) => {
+        e.preventDefault();
+        try {
+          await api("/api/projects", {
+            method: "POST",
+            body: JSON.stringify({
+              name: nameInput.value,
+              slug: slugInput.value,
+            }),
+          });
+          e.target.reset();
+          await load();
+        } catch (e) {
+          alert(e.message);
+        }
+      };
+      async function createKey(id) {
+        const keyName = prompt("Name this CI key", "GitHub Actions");
+        if (!keyName) return;
+        try {
+          const result = await api(`/api/projects/${id}/keys`, {
+            method: "POST",
+            body: JSON.stringify({ name: keyName }),
+          });
+          secretEl.textContent = result.secret;
+          document.querySelector("dialog").showModal();
+        } catch (e) {
+          alert(e.message);
+        }
+      }
+      async function revokeKey(projectID, keyID) {
+        if (
+          !confirm(
+            "Revoke this API key? Existing CI jobs using it will stop uploading.",
+          )
+        )
+          return;
+        try {
+          await api(`/api/projects/${projectID}/keys/${keyID}`, {
+            method: "DELETE",
+          });
+          await load();
+        } catch (e) {
+          alert(e.message);
+        }
+      }
+      async function billing() {
+        try {
+          const endpoint =
+            me.user.plan === "team"
+              ? "/api/billing/portal"
+              : "/api/billing/checkout";
+          const result = await api(endpoint, { method: "POST", body: "{}" });
+          location.href = result.url;
+        } catch (e) {
+          alert(e.message);
+        }
+      }
+      async function logout() {
+        await api("/logout", { method: "POST", body: "{}" });
+        location.href = "/";
+      }
+      function escapeHTML(v) {
+        return String(v).replace(
+          /[&<>'"]/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              "'": "&#39;",
+              '"': "&quot;",
+            })[c],
+        );
+      }
+      load().catch((e) => {
+        identityEl.textContent = e.message;
+      });
+    </script>
+  </body>
+</html>

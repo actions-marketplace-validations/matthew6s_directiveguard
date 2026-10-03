@@ -14,6 +14,12 @@ inputs:
   fail-on:
     description: Minimum severity that fails the check
     default: high
+  cloud-url:
+    description: Optional AgentShield Cloud base URL for scan history
+    default: ""
+  api-key:
+    description: AgentShield Cloud project API key
+    required: false
 runs:
   using: docker
   image: Dockerfile
@@ -22,4 +28,6 @@ runs:
     - ${{ inputs.format }}
     - --fail-on
     - ${{ inputs.fail-on }}
+    - --upload
+    - ${{ inputs.cloud-url }}
     - ${{ inputs.path }}
