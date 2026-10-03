@@ -1,9 +1,9 @@
 FROM golang:1.26-alpine AS build
 WORKDIR /src
 COPY . .
-RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /agentshield ./cmd/agentshield
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /directiveguard ./cmd/directiveguard
 
 FROM gcr.io/distroless/static-debian12:nonroot
-COPY --from=build /agentshield /usr/local/bin/agentshield
+COPY --from=build /directiveguard /usr/local/bin/directiveguard
 WORKDIR /workspace
-ENTRYPOINT ["agentshield"]
+ENTRYPOINT ["directiveguard"]

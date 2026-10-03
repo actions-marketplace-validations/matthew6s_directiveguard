@@ -39,7 +39,7 @@ func TestRunVersion(t *testing.T) {
 	if got := run([]string{"--version"}, &stdout, &stderr); got != 0 {
 		t.Fatalf("run() = %d", got)
 	}
-	if !strings.Contains(stdout.String(), "agentshield") {
+	if !strings.Contains(stdout.String(), "directiveguard") {
 		t.Fatalf("unexpected output: %q", stdout.String())
 	}
 }

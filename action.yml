@@ -1,4 +1,4 @@
-name: AgentShield
+name: DirectiveGuard AI Repository Scan
 description: Scan repositories for unsafe AI-agent instructions, MCP configuration, and workflows
 author: Matthew Searce
 branding:
@@ -15,10 +15,10 @@ inputs:
     description: Minimum severity that fails the check
     default: high
   cloud-url:
-    description: Optional AgentShield Cloud base URL for scan history
+    description: Optional DirectiveGuard Cloud base URL for scan history
     default: ""
   api-key:
-    description: AgentShield Cloud project API key
+    description: DirectiveGuard Cloud project API key
     required: false
 runs:
   using: docker

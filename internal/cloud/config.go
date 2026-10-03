@@ -22,9 +22,9 @@ type Config struct {
 
 func ConfigFromEnv() (Config, error) {
 	config := Config{
-		Address:             envOr("AGENTSHIELD_ADDRESS", ":8080"),
-		DatabasePath:        envOr("AGENTSHIELD_DATABASE", "agentshield-cloud.db"),
-		BaseURL:             strings.TrimRight(envOr("AGENTSHIELD_BASE_URL", "http://localhost:8080"), "/"),
+		Address:             envOr("DIRECTIVEGUARD_ADDRESS", ":8080"),
+		DatabasePath:        envOr("DIRECTIVEGUARD_DATABASE", "directiveguard-cloud.db"),
+		BaseURL:             strings.TrimRight(envOr("DIRECTIVEGUARD_BASE_URL", "http://localhost:8080"), "/"),
 		GitHubClientID:      os.Getenv("GITHUB_CLIENT_ID"),
 		GitHubClientSecret:  os.Getenv("GITHUB_CLIENT_SECRET"),
 		StripeSecretKey:     os.Getenv("STRIPE_SECRET_KEY"),
@@ -32,13 +32,13 @@ func ConfigFromEnv() (Config, error) {
 		StripeWebhookSecret: os.Getenv("STRIPE_WEBHOOK_SECRET"),
 		StripeTeamPriceID:   os.Getenv("STRIPE_TEAM_PRICE_ID"),
 	}
-	encodedSecret := os.Getenv("AGENTSHIELD_SESSION_SECRET")
+	encodedSecret := os.Getenv("DIRECTIVEGUARD_SESSION_SECRET")
 	if encodedSecret == "" {
-		return Config{}, fmt.Errorf("AGENTSHIELD_SESSION_SECRET is required (base64-encoded 32+ random bytes)")
+		return Config{}, fmt.Errorf("DIRECTIVEGUARD_SESSION_SECRET is required (base64-encoded 32+ random bytes)")
 	}
 	secret, err := base64.StdEncoding.DecodeString(encodedSecret)
 	if err != nil || len(secret) < 32 {
-		return Config{}, fmt.Errorf("AGENTSHIELD_SESSION_SECRET must be base64-encoded and at least 32 bytes")
+		return Config{}, fmt.Errorf("DIRECTIVEGUARD_SESSION_SECRET must be base64-encoded and at least 32 bytes")
 	}
 	config.SessionSecret = secret
 	if (config.GitHubClientID == "") != (config.GitHubClientSecret == "") {

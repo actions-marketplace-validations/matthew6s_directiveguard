@@ -6,7 +6,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/matthew6s/agentshield/internal/scanner"
+	"github.com/matthew6s/directiveguard/internal/scanner"
 )
 
 func Write(writer io.Writer, format string, result scanner.Result) error {
@@ -26,7 +26,7 @@ func Write(writer io.Writer, format string, result scanner.Result) error {
 
 func writeText(writer io.Writer, result scanner.Result) error {
 	if len(result.Findings) == 0 {
-		_, err := fmt.Fprintf(writer, "AgentShield: no findings (%d files scanned)\n", result.FilesScanned)
+		_, err := fmt.Fprintf(writer, "DirectiveGuard: no findings (%d files scanned)\n", result.FilesScanned)
 		return err
 	}
 	counts := map[string]int{}

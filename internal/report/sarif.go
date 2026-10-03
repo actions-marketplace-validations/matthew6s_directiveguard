@@ -5,7 +5,7 @@ import (
 	"io"
 	"sort"
 
-	"github.com/matthew6s/agentshield/internal/scanner"
+	"github.com/matthew6s/directiveguard/internal/scanner"
 )
 
 type sarifDocument struct {
@@ -74,7 +74,7 @@ func writeSARIF(writer io.Writer, result scanner.Result) error {
 	}
 	sort.Slice(ruleList, func(i, j int) bool { return ruleList[i].ID < ruleList[j].ID })
 	document := sarifDocument{Version: "2.1.0", Schema: "https://json.schemastore.org/sarif-2.1.0.json",
-		Runs: []sarifRun{{Tool: sarifTool{Driver: sarifDriver{Name: "AgentShield", InformationURI: "https://github.com/matthew6s/agentshield", Rules: ruleList}}, Results: results}}}
+		Runs: []sarifRun{{Tool: sarifTool{Driver: sarifDriver{Name: "DirectiveGuard", InformationURI: "https://github.com/matthew6s/directiveguard", Rules: ruleList}}, Results: results}}}
 	encoder := json.NewEncoder(writer)
 	encoder.SetIndent("", "  ")
 	return encoder.Encode(document)

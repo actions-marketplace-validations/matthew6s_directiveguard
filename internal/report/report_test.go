@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/matthew6s/agentshield/internal/scanner"
+	"github.com/matthew6s/directiveguard/internal/scanner"
 )
 
 func TestFormats(t *testing.T) {

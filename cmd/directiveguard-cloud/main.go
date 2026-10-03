@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/matthew6s/agentshield/internal/cloud"
+	"github.com/matthew6s/directiveguard/internal/cloud"
 )
 
 func main() {
@@ -35,7 +35,7 @@ func main() {
 		defer cancel()
 		_ = server.Shutdown(shutdownCtx)
 	}()
-	logger.Info("AgentShield Cloud listening", "address", config.Address)
+	logger.Info("DirectiveGuard Cloud listening", "address", config.Address)
 	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		logger.Error("server stopped", "error", err)
 		os.Exit(1)

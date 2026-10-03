@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/matthew6s/agentshield/internal/scanner"
+	"github.com/matthew6s/directiveguard/internal/scanner"
 )
 
 func TestSend(t *testing.T) {

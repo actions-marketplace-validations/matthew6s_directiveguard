@@ -4,7 +4,7 @@ The code is a deployable MVP, but accepting production payments requires operati
 
 ## Required before public launch
 
-- Deploy behind HTTPS with `AGENTSHIELD_BASE_URL` set to the exact public origin.
+- Deploy behind HTTPS with `DIRECTIVEGUARD_BASE_URL` set to the exact public origin.
 - Store session, GitHub, and Stripe secrets in the hosting provider's secret manager.
 - Create the GitHub OAuth App and verify its callback URL.
 - Create the $29/month Stripe Team price and configure the three webhook events documented in [cloud.md](cloud.md).

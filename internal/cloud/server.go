@@ -169,7 +169,7 @@ func (s *Server) createKey(w http.ResponseWriter, r *http.Request) {
 		s.internalError(w, err)
 		return
 	}
-	raw := "as_live_" + secret
+	raw := "dg_live_" + secret
 	key, err := s.store.InsertAPIKey(r.Context(), projectID, input.Name, raw[:16], keyHash(raw))
 	if err != nil {
 		s.internalError(w, err)

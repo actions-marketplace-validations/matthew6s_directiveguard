@@ -1,4 +1,4 @@
-module github.com/matthew6s/agentshield
+module github.com/matthew6s/directiveguard
 
 go 1.26.0
 

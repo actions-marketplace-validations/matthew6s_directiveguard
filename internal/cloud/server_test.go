@@ -40,7 +40,7 @@ func TestProjectKeyAndScanFlow(t *testing.T) {
 		Secret string `json:"secret"`
 	}
 	decodeResponse(t, response, &keyResponse)
-	if !strings.HasPrefix(keyResponse.Secret, "as_live_") {
+	if !strings.HasPrefix(keyResponse.Secret, "dg_live_") {
 		t.Fatalf("unexpected key %q", keyResponse.Secret)
 	}
 
@@ -102,7 +102,7 @@ func TestProjectOwnershipBoundary(t *testing.T) {
 func TestInvalidAPIKeyRejected(t *testing.T) {
 	server, _ := testServer(t)
 	request := httptest.NewRequest(http.MethodPost, "/api/v1/scans", strings.NewReader(`{"files_scanned":1,"findings":[]}`))
-	request.Header.Set("Authorization", "Bearer as_live_invalid")
+	request.Header.Set("Authorization", "Bearer dg_live_invalid")
 	response := httptest.NewRecorder()
 	server.Handler().ServeHTTP(response, request)
 	if response.Code != http.StatusUnauthorized {

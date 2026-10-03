@@ -10,14 +10,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/matthew6s/agentshield/internal/scanner"
+	"github.com/matthew6s/directiveguard/internal/scanner"
 )
 
 type Metadata struct{ CommitSHA, Branch string }
 
 func Send(ctx context.Context, baseURL, apiKey string, result scanner.Result, metadata Metadata) error {
 	if apiKey == "" {
-		return fmt.Errorf("AGENTSHIELD_API_KEY is required when --upload is set")
+		return fmt.Errorf("DIRECTIVEGUARD_API_KEY is required when --upload is set")
 	}
 	findings := make([]map[string]any, 0, len(result.Findings))
 	for _, finding := range result.Findings {
@@ -34,7 +34,7 @@ func Send(ctx context.Context, baseURL, apiKey string, result scanner.Result, me
 	}
 	request.Header.Set("Authorization", "Bearer "+apiKey)
 	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("User-Agent", "AgentShield CLI")
+	request.Header.Set("User-Agent", "DirectiveGuard CLI")
 	client := &http.Client{Timeout: 20 * time.Second}
 	response, err := client.Do(request)
 	if err != nil {

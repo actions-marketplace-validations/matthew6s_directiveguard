@@ -1,6 +1,6 @@
-# AgentShield Cloud
+# DirectiveGuard Cloud
 
-AgentShield Cloud is the hosted layer for teams using the open-source scanner across many repositories. The repository contains a deployable MVP with GitHub OAuth, project API keys, scan history, plan limits, and Stripe subscriptions.
+DirectiveGuard Cloud is the hosted layer for teams using the open-source scanner across many repositories. The repository contains a deployable MVP with GitHub OAuth, project API keys, scan history, plan limits, and Stripe subscriptions.
 
 ## Free and open source
 
@@ -20,10 +20,10 @@ AgentShield Cloud is the hosted layer for teams using the open-source scanner ac
 
 ## Run locally
 
-1. Copy `.env.example` to a private environment file and generate `AGENTSHIELD_SESSION_SECRET` with `openssl rand -base64 32`.
+1. Copy `.env.example` to a private environment file and generate `DIRECTIVEGUARD_SESSION_SECRET` with `openssl rand -base64 32`.
 2. Create a GitHub OAuth App whose callback is `http://localhost:8080/auth/github/callback`.
 3. Set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`.
-4. Start `go run ./cmd/agentshield-cloud` and open `http://localhost:8080`.
+4. Start `go run ./cmd/directiveguard-cloud` and open `http://localhost:8080`.
 
 Billing remains disabled until `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `STRIPE_TEAM_PRICE_ID` are all configured. Register `/webhooks/stripe` for `checkout.session.completed`, `customer.subscription.updated`, and `customer.subscription.deleted`.
 
@@ -32,14 +32,14 @@ Complete the [launch checklist](launch-checklist.md) before accepting production
 For a container deployment:
 
 ```sh
-docker build -f Cloud.Dockerfile -t agentshield-cloud .
-docker run --read-only --tmpfs /tmp -v agentshield-data:/data --env-file .env -p 8080:8080 agentshield-cloud
+docker build -f Cloud.Dockerfile -t directiveguard-cloud .
+docker run --read-only --tmpfs /tmp -v directiveguard-data:/data --env-file .env -p 8080:8080 directiveguard-cloud
 ```
 
 ## Upload from CI
 
 ```sh
-AGENTSHIELD_API_KEY=as_live_... agentshield --upload https://cloud.example.com .
+DIRECTIVEGUARD_API_KEY=dg_live_... directiveguard --upload https://cloud.example.com .
 ```
 
 For the GitHub Action, provide `cloud-url` and store `api-key` in GitHub Actions secrets.

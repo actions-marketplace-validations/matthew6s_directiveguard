@@ -1,11 +1,11 @@
-# AgentShield
+# DirectiveGuard
 
 **Know what a repository asks your AI coding agent to do before the agent does it.**
 
-AgentShield is a fast, local scanner for risky AI-agent instructions, MCP configurations, and agent-facing GitHub workflows. It runs without an account, API key, network access, or language model.
+DirectiveGuard is a fast, local scanner for risky AI-agent instructions, MCP configurations, and agent-facing GitHub workflows. It runs without an account, API key, network access, or language model.
 
 ```console
-$ agentshield .
+$ directiveguard .
 ASI001 HIGH   AGENTS.md:8  Remote content is piped to a shell
   Agent instructions download remote content and execute it directly.
   Fix: Download to a file, verify a pinned checksum or signature, inspect it, and then execute it.
@@ -14,7 +14,7 @@ ASI001 HIGH   AGENTS.md:8  Remote content is piped to a shell
 ```
 
 > [!IMPORTANT]
-> AgentShield finds suspicious patterns. A clean scan is not proof that a repository is safe, and findings require human review.
+> DirectiveGuard finds suspicious patterns. A clean scan is not proof that a repository is safe, and findings require human review.
 
 ## What it scans
 
@@ -34,20 +34,20 @@ See the complete [rule reference](docs/rules.md).
 Build from source with Go 1.26 or newer:
 
 ```sh
-go install github.com/matthew6s/agentshield/cmd/agentshield@latest
+go install github.com/matthew6s/directiveguard/cmd/directiveguard@latest
 ```
 
 Scan the current repository:
 
 ```sh
-agentshield .
+directiveguard .
 ```
 
 Machine-readable output and CI thresholds:
 
 ```sh
-agentshield --format json --fail-on medium .
-agentshield --format sarif --fail-on none . > agentshield.sarif
+directiveguard --format json --fail-on medium .
+directiveguard --format sarif --fail-on none . > directiveguard.sarif
 ```
 
 Exit codes are `0` for a passing scan, `1` when findings meet the configured threshold, and `2` for usage or scanning errors.
@@ -55,7 +55,7 @@ Exit codes are `0` for a passing scan, `1` when findings meet the configured thr
 ## GitHub Action
 
 ```yaml
-name: AgentShield
+name: DirectiveGuard
 on: [pull_request]
 
 permissions:
@@ -66,33 +66,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: matthew6s/agentshield@v1
+      - uses: matthew6s/directiveguard@v1
         with:
           fail-on: high
 ```
 
-To retain scan history in AgentShield Cloud:
+To retain scan history in DirectiveGuard Cloud:
 
 ```yaml
-      - uses: matthew6s/agentshield@v1
+      - uses: matthew6s/directiveguard@v1
         with:
           fail-on: high
           cloud-url: https://cloud.example.com
-          api-key: ${{ secrets.AGENTSHIELD_API_KEY }}
+          api-key: ${{ secrets.DIRECTIVEGUARD_API_KEY }}
 ```
 
 Pin actions to full commit hashes in sensitive production workflows. Version tags are shown above for readability.
 
 ## Open source and Cloud
 
-The CLI, core rules, and CI integration are MIT licensed. The deployable [AgentShield Cloud](docs/cloud.md) MVP adds GitHub login, projects, scan history, plan limits, API keys, and Stripe subscriptions. The free scanner remains fully useful on its own.
+The CLI, core rules, and CI integration are MIT licensed. The deployable [DirectiveGuard Cloud](docs/cloud.md) MVP adds GitHub login, projects, scan history, plan limits, API keys, and Stripe subscriptions. The free scanner remains fully useful on its own.
 
 ## Development
 
 ```sh
 go test -race ./...
 go vet ./...
-go build ./cmd/agentshield
+go build ./cmd/directiveguard
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).

@@ -1,6 +1,6 @@
 # Detection rules
 
-AgentShield starts with a small set of reviewable, high-signal rules. Findings are evidence for human review, not a verdict that a repository is malicious.
+DirectiveGuard starts with a small set of reviewable, high-signal rules. Findings are evidence for human review, not a verdict that a repository is malicious.
 
 | ID | Severity | Detects |
 | --- | --- | --- |
